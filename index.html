@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samsvarsvurdering (EU) 2025/20 - CAA Norway</title>
+    <link rel="stylesheet" href="stil.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="navbar-wrapper">
+            <div class="nav-left">
+                <img src="logo.png.png" alt="CAA Norway" class="nav-logo">
+            </div>
+            <div class="nav-center">
+                <h1 class="nav-title">Felleseuropeisk regelverk for ground handling</h1>
+                <h2 class="nav-subtitle">Forordning (EU) 2025/20</h2>
+            </div>
+            <div class="nav-right"></div>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <div id="welcome-screen" class="question-card welcome-card">
+            
+            <div class="welcome-icon">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            
+            <h2>Flytskjema</h2>
+            
+            <div class="welcome-content">
+                <p>Dette verktøyet leder deg gjennom en prosess for å avklare om din virksomhet omfattes av regelverket, basert på:</p>
+                <ul class="clean-list">
+                    <li><i class="fas fa-plane-departure"></i> Lufthavn</li>
+                    <li><i class="fas fa-building"></i> Organisasjonstype</li>
+                    <li><i class="fas fa-cogs"></i> Tjenester</li>
+                </ul>
+            </div>
+
+            <button onclick="startTool()" class="continue-button btn-start">
+                Start vurdering
+            </button>
+
+            <div class="disclaimer-text">
+                <strong>NB:</strong> Brukeren er selv ansvarlig for å sjekke gjeldende regelverk. 
+                Dette verktøyet er kun en veiledning. Eventuelle spørsmål og behov for avklaring kan sendes til 
+                <a href="mailto:postmottak@caa.no">postmottak@caa.no</a>.
+            </div>
+
+            <div class="last-updated-box">
+                <small>Sist oppdatert: 19.01.2026</small>
+            </div>
+        </div>
+
+        <div id="tool-container" class="hidden">
+            <div class="flow-steps-container">
+                <div class="flow-step" id="step-indicator-easa_airport">
+                    <div class="step-circle">1</div>
+                    <span>Lufthavn</span>
+                </div>
+                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-step" id="step-indicator-entity_type">
+                    <div class="step-circle">2</div>
+                    <span>Organisasjon</span>
+                </div>
+                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-step" id="step-indicator-service_type">
+                    <div class="step-circle">3</div>
+                    <span>Tjenester</span>
+                </div>
+                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-step" id="step-indicator-exemptions">
+                    <div class="step-circle">4</div>
+                    <span>Unntak</span>
+                </div>
+            </div>
+
+            <div class="card-wrapper">
+                <div id="quiz-card" class="question-card">
+                    
+                    <div id="question-content" class="fade-in">
+                        <h2 id="question-text">Laster spørsmål...</h2>
+                        
+                        <div id="icao-search-container" class="hidden">
+                            <label for="icao-input">Skriv inn ICAO-kode</label>
+                            
+                            <div class="icao-three-box-container">
+                                <input type="text" id="icao-input" maxlength="4" placeholder="ENXX" autocomplete="off">
+                                <div id="icao-name-display"></div>
+                                <div id="icao-icon-box"></div>
+                            </div>
+                            
+                            <p id="icao-status"></p>
+                        </div>
+
+                        <div id="info-grid" class="info-grid hidden"></div>
+
+                        <div id="info-box" class="info-box hidden"></div>
+
+                        <div id="service-detail-box" class="service-info-display hidden">
+                            <h4 id="service-title"></h4>
+                            <div id="service-text"></div>
+                        </div>
+                        
+                        <div id="options-container" class="button-grid-main"></div>
+                        
+                        <div id="secondary-options-container" class="button-grid-secondary"></div>
+                    </div>
+
+                    <div id="result-area" class="hidden fade-in">
+                        <h2 class="result-header">Resultat</h2>
+                        <div id="result-summary" class="summary-box hidden"></div>
+                        <div id="result-box" class="result-message"></div>
+                        <div class="button-footer">
+                            <button onclick="location.reload()" class="btn-reset">Start på nytt</button>
+                            <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> Lagre / Skriv ut</button>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button id="back-btn" class="btn-back hidden" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Gå tilbake
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="logikk.js"></script>
+</body>
+</html>
