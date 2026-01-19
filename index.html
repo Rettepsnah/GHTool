@@ -15,7 +15,7 @@
                 <img src="logo.png" alt="CAA Norway" class="nav-logo">
             </div>
             <div class="nav-center">
-                <h1 class="nav-title">Felleseuropeisk regelverk for ground handling</h1>
+                <h1 class="nav-title">Veileder: Ground Handling</h1>
                 <h2 class="nav-subtitle">Forordning (EU) 2025/20</h2>
             </div>
             <div class="nav-right"></div>
@@ -26,33 +26,40 @@
         
         <div id="welcome-screen" class="question-card welcome-card">
             
-            <div class="welcome-icon">
-                <i class="fas fa-exchange-alt"></i>
+            <div class="welcome-header">
+                <div class="welcome-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+                <h2>Samsvarsvurdering</h2>
             </div>
-            
-            <h2>Flytskjema</h2>
             
             <div class="welcome-content">
-                <p>Dette verktøyet leder deg gjennom en prosess for å avklare om din virksomhet omfattes av regelverket, basert på:</p>
-                <ul class="clean-list">
-                    <li><i class="fas fa-plane-departure"></i> Lufthavn</li>
-                    <li><i class="fas fa-building"></i> Organisasjonstype</li>
-                    <li><i class="fas fa-cogs"></i> Tjenester</li>
-                </ul>
+                <p class="lead-text">Dette verktøyet hjelper din virksomhet å avklare om dere omfattes av det felleseuropeiske regelverket for bakketjenester.</p>
+                
+                <div class="steps-preview">
+                    <div class="step-item">
+                        <span class="step-num">1</span>
+                        <span>Lufthavn</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item">
+                        <span class="step-num">2</span>
+                        <span>Aktør</span>
+                    </div>
+                    <div class="step-line"></div>
+                    <div class="step-item">
+                        <span class="step-num">3</span>
+                        <span>Tjeneste</span>
+                    </div>
+                </div>
             </div>
 
-            <button onclick="startTool()" class="continue-button btn-start">
-                Start vurdering
+            <button onclick="startTool()" class="btn-primary btn-large">
+                Start veilederen
             </button>
 
             <div class="disclaimer-text">
-                <strong>NB:</strong> Brukeren er selv ansvarlig for å sjekke gjeldende regelverk. 
-                Dette verktøyet er kun en veiledning. Eventuelle spørsmål og behov for avklaring kan sendes til 
-                <a href="mailto:postmottak@caa.no">postmottak@caa.no</a>.
-            </div>
-
-            <div class="last-updated-box">
-                <small>Sist oppdatert: 19.01.2026</small>
+                <p><strong>Veiledning:</strong> Resultatet fra dette verktøyet er veiledende. Brukeren er selv ansvarlig for å sjekke gjeldende regelverk. Spørsmål kan rettes til <a href="mailto:postmottak@caa.no">postmottak@caa.no</a>.</p>
             </div>
         </div>
 
@@ -60,22 +67,22 @@
             <div class="flow-steps-container">
                 <div class="flow-step" id="step-indicator-easa_airport">
                     <div class="step-circle">1</div>
-                    <span>Lufthavn</span>
+                    <span class="step-label">Lufthavn</span>
                 </div>
-                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-line"></div>
                 <div class="flow-step" id="step-indicator-entity_type">
                     <div class="step-circle">2</div>
-                    <span>Organisasjon</span>
+                    <span class="step-label">Organisasjon</span>
                 </div>
-                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-line"></div>
                 <div class="flow-step" id="step-indicator-service_type">
                     <div class="step-circle">3</div>
-                    <span>Tjenester</span>
+                    <span class="step-label">Tjenester</span>
                 </div>
-                <div class="flow-arrow"><i class="fas fa-chevron-right"></i></div>
+                <div class="flow-line"></div>
                 <div class="flow-step" id="step-indicator-exemptions">
                     <div class="step-circle">4</div>
-                    <span>Unntak</span>
+                    <span class="step-label">Unntak</span>
                 </div>
             </div>
 
@@ -83,18 +90,21 @@
                 <div id="quiz-card" class="question-card">
                     
                     <div id="question-content" class="fade-in">
-                        <h2 id="question-text">Laster spørsmål...</h2>
+                        <h2 id="question-text" class="section-title">Laster...</h2>
                         
                         <div id="icao-search-container" class="hidden">
-                            <label for="icao-input">Skriv inn ICAO-kode</label>
+                            <label for="icao-input" class="input-label">Søk etter lufthavn (ICAO-kode)</label>
                             
-                            <div class="icao-three-box-container">
-                                <input type="text" id="icao-input" maxlength="4" placeholder="ENXX" autocomplete="off">
-                                <div id="icao-name-display"></div>
-                                <div id="icao-icon-box"></div>
+                            <div class="icao-input-group">
+                                <input type="text" id="icao-input" maxlength="4" placeholder="F.eks. ENGM" autocomplete="off">
+                                <div id="icao-result-box" class="icao-result hidden">
+                                    <div id="icao-icon-box"></div>
+                                    <div class="icao-text">
+                                        <span id="icao-name-display"></span>
+                                        <small id="icao-status"></small>
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <p id="icao-status"></p>
                         </div>
 
                         <div id="info-grid" class="info-grid hidden"></div>
@@ -112,18 +122,19 @@
                     </div>
 
                     <div id="result-area" class="hidden fade-in">
-                        <h2 class="result-header">Resultat</h2>
-                        <div id="result-summary" class="summary-box hidden"></div>
+                        <h2 class="section-title">Resultat</h2>
                         <div id="result-box" class="result-message"></div>
+                        <div id="result-summary" class="summary-box hidden"></div>
+                        
                         <div class="button-footer">
-                            <button onclick="location.reload()" class="btn-reset">Start på nytt</button>
-                            <button onclick="window.print()" class="btn-print"><i class="fas fa-print"></i> Lagre / Skriv ut</button>
+                            <button onclick="location.reload()" class="btn-outline">Start på nytt</button>
+                            <button onclick="window.print()" class="btn-primary"><i class="fas fa-print"></i> Lagre / Skriv ut</button>
                         </div>
                     </div>
 
                     <div class="card-footer">
-                        <button id="back-btn" class="btn-back hidden" onclick="goBack()">
-                            <i class="fas fa-arrow-left"></i> Gå tilbake
+                        <button id="back-btn" class="btn-text hidden" onclick="goBack()">
+                            <i class="fas fa-arrow-left"></i> Tilbake
                         </button>
                     </div>
                 </div>

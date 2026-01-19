@@ -47,9 +47,10 @@ const airportDB = {
     "ENSK": { name: "Stokmarknes lufthavn", easa: true },
     "ENVY": { name: "Værøy Helikopterhavn, Tabbisodden", easa: true, isHelicopter: true },
     "ENNO": { name: "Notodden lufthavn, Tuven", easa: false },
-    "ENDU": { name: "Bardufoss lufthavn", easa: false } // NY
+    "ENDU": { name: "Bardufoss lufthavn", easa: false }
 };
 
+// ... (RESTEN AV DATA-VARIABLENE STEP1INFO, SERVICE DETAILS ETC ER UENDRET) ...
 // Data for infobokser i Steg 1
 const step1Info = `
     <div class="info-card-modern blue">
@@ -135,11 +136,10 @@ const serviceDetails = {
     `
 };
 
-// Konfigurasjon av stegene
 const flow = [
     {
         id: "easa_airport",
-        question: "Tjenestetilbyder på en EASA-lufthavn?",
+        question: "Velg lufthavn",
         extraHtml: step1Info,
         requireICAO: true, 
         options: [
@@ -148,13 +148,13 @@ const flow = [
     },
     {
         id: "entity_type",
-        question: "Tilhører du en av disse aktør-kategoriene?",
+        question: "Hvilken aktør representerer du?",
         layout: "horizontal",
         extraHtml: step2Info,
         options: [
             { text: "GHSP", sub: "Ground Handling Service Provider", next: "service_type" },
-            { text: "ADR", sub: "Lufthavnoperatør som også utfører ground handling", next: "service_type" },
-            { text: "AOC", sub: "Flyselskap som også utfører self-handling", next: "service_type" }
+            { text: "ADR", sub: "Lufthavnoperatør", next: "service_type" },
+            { text: "AOC", sub: "Flyselskap (Self-handling)", next: "service_type" }
         ],
         secondaryOption: { text: "Ingen av disse", result: "Du er ikke omfattet av regelverket (EU) 2025/20." }
     },
@@ -173,7 +173,7 @@ const flow = [
     },
     {
         id: "exemptions",
-        question: "Noen tjenester og aktiviteter er unntatt regelverket - Er noen av disse aktuelle for deg?",
+        question: "Gjelder noen av disse unntakene deg?",
         layout: "grid",
         options: [
             { text: "Marshalling of aircraft", type: "dashed", action: "confirm_exempt" },
@@ -209,13 +209,12 @@ const flow = [
             }
         ],
         secondaryOption: { 
-            text: "Nei", 
-            result: "<strong>Resultat:</strong><br>Tjenestene du utfører er omfattet av regelverket, og du må levere inn samsvarserklæring iht. (EU) 2025/20." 
+            text: "Nei, ingen unntak passer", 
+            result: "<strong>Konklusjon:</strong><br>Virksomheten din ser ut til å være omfattet av regelverket (EU) 2025/20. Du må levere samsvarserklæring." 
         }
     }
 ];
 
-// Tilstand
 let stepHistory = [];
 let userChoices = {
     airport: "",
@@ -235,13 +234,11 @@ function startTool() {
 function renderStep(stepId, isBack = false) {
     const step = flow.find(s => s.id === stepId);
     
-    // Animasjon
     const contentDiv = document.getElementById('question-content');
     contentDiv.classList.remove('fade-in');
     void contentDiv.offsetWidth; 
     contentDiv.classList.add('fade-in');
 
-    // Håndter historikk
     if (!isBack && stepHistory.length > 0 && stepHistory[stepHistory.length - 1] !== stepId) {
         if (!stepHistory.includes(stepId)) stepHistory.push(stepId); 
     } else if (stepHistory.length === 0) {
@@ -299,7 +296,6 @@ function renderStep(stepId, isBack = false) {
 
     if (stepId !== "easa_airport") {
         step.options.forEach(opt => {
-            
             if (opt.type === "static") {
                 const div = document.createElement('div');
                 div.innerHTML = opt.html;
@@ -319,12 +315,11 @@ function renderStep(stepId, isBack = false) {
             let html = "";
             if (opt.icon) html += `<i class="fas ${opt.icon}"></i>`;
             html += `<div>${opt.text}</div>`;
-            if (opt.sub) html += `<div style="font-size:0.8rem; font-weight:normal; margin-top:5px;">${opt.sub}</div>`;
+            if (opt.sub) html += `<div class="sub-text">${opt.sub}</div>`;
             
             btn.innerHTML = html;
             
             btn.onclick = () => {
-                // Lagre valg (utenom Service som lagres ved bekreftelse)
                 if (stepId === "entity_type") userChoices.entity = opt.text;
 
                 if (opt.isService) {
@@ -347,10 +342,7 @@ function renderStep(stepId, isBack = false) {
 
                     const nextBtn = document.createElement('button');
                     nextBtn.id = 'next-step-btn';
-                    nextBtn.className = 'btn-reset';
-                    nextBtn.style.width = "100%";
-                    nextBtn.style.marginTop = "20px";
-                    nextBtn.style.marginBottom = "20px";
+                    nextBtn.className = 'btn-primary btn-full-width margin-top';
                     nextBtn.innerHTML = `Gå videre <i class="fas fa-arrow-right"></i>`;
                     nextBtn.onclick = () => {
                          stepHistory.push(opt.next);
@@ -394,7 +386,6 @@ function renderStep(stepId, isBack = false) {
     if (step.secondaryOption) {
         const noBtn = document.createElement('button');
         
-        // ENDRET: Gul knapp kun for steg 4, grønn for andre
         if (stepId === 'exemptions') {
             noBtn.className = 'btn-highlight-yellow';
         } else {
@@ -417,6 +408,7 @@ function goBack() {
 
 function setupICAOListener(buttonContainer) {
     const input = document.getElementById('icao-input');
+    const resultBox = document.getElementById('icao-result-box');
     const nameDisplay = document.getElementById('icao-name-display');
     const iconBox = document.getElementById('icao-icon-box');
     const status = document.getElementById('icao-status');
@@ -425,8 +417,7 @@ function setupICAOListener(buttonContainer) {
         buttonContainer.innerHTML = ''; 
         if (isValid) {
             const btn = document.createElement('button');
-            btn.className = 'btn-reset'; 
-            btn.style.width = "100%"; 
+            btn.className = 'btn-primary btn-full-width'; 
             btn.innerHTML = `Gå videre <i class="fas fa-arrow-right"></i>`;
             btn.onclick = () => {
                 userChoices.airport = airportName || (input.value.toUpperCase());
@@ -440,68 +431,61 @@ function setupICAOListener(buttonContainer) {
     const showManualButton = () => {
         buttonContainer.innerHTML = '';
         const manBtn = document.createElement('button');
-        manBtn.className = 'btn-manual-confirm';
+        manBtn.className = 'btn-outline btn-full-width margin-top';
         manBtn.innerHTML = "Jeg bekrefter at dette er en EASA-lufthavn";
         manBtn.onclick = () => {
             nameDisplay.innerText = "Manuelt bekreftet";
-            iconBox.innerHTML = '<i class="fas fa-check" style="color: green;"></i>';
-            iconBox.style.borderColor = "green";
-            status.innerHTML = `<span style="color:#856404">Manuelt bekreftet.</span>`;
+            iconBox.innerHTML = '<i class="fas fa-check-circle" style="color: var(--caa-success);"></i>';
+            status.innerHTML = `<span style="color:var(--caa-text)">Manuelt bekreftet av bruker.</span>`;
             updateButton(true, input.value + " (Manuelt bekreftet)");
         };
         buttonContainer.appendChild(manBtn);
     };
 
-    const easaLink = `<br><br><a href="https://www.easa.europa.eu/en/datasets/aerodromes-falling-scope-regulation-eu-20181139" target="_blank">Se EASA sin oversikt over lufthavner her</a>`;
-
     const checkInput = () => {
         const val = input.value.toUpperCase();
         
         if (val.length < 4) {
-             nameDisplay.innerText = "";
-             iconBox.innerHTML = "";
-             iconBox.style.borderColor = "#e0e0e0";
-             status.innerText = ""; 
+             resultBox.classList.add('hidden');
              updateButton(false);
              return;
         }
 
         if (val.length === 4) {
+            resultBox.classList.remove('hidden');
             const airport = airportDB[val];
+            
             if (airport) {
                 nameDisplay.innerText = airport.name;
 
                 if (airport.easa) {
-                    iconBox.innerHTML = '<i class="fas fa-check" style="color: green;"></i>';
-                    iconBox.style.borderColor = "green";
+                    // EASA GODKJENT
+                    iconBox.innerHTML = '<i class="fas fa-check-circle" style="color: var(--caa-success);"></i>';
                     
                     if (airport.isHelicopter) {
                          status.innerHTML = `
-                            ${airport.name} er en EASA-lufthavn.
-                            <div class="helicopter-warning">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <strong>OBS:</strong> Denne lufthavnen er unntatt da helikopterdrift ikke omfattes av regelverket.
-                            </div>
-                            ${easaLink}
+                            <span style="color: #d35400;"><i class="fas fa-exclamation-triangle"></i> Helikopterhavn (Unntatt regelverket)</span>
                         `;
                     } else {
-                         status.innerHTML = `${airport.name} er en EASA-lufthavn.${easaLink}`;
+                         status.innerHTML = `EASA-lufthavn`;
+                         status.style.color = "var(--caa-success)";
                     }
-                    
                     updateButton(true, `${airport.name} (${val})`);
                 } else {
-                    iconBox.innerHTML = '<i class="fas fa-times" style="color: red;"></i>';
-                    iconBox.style.borderColor = "red";
-
-                    status.innerHTML = `${airport.name} er IKKE en EASA-lufthavn (Unntatt).${easaLink}`;
-                    updateButton(false);
+                    // IKKE EASA (Men tillat å gå videre)
+                    iconBox.innerHTML = '<i class="fas fa-info-circle" style="color: #d35400;"></i>';
+                    
+                    // ENDRET HER: Tillater nå "true" i updateButton
+                    status.innerHTML = `Dette er ikke en EASA-lufthavn, men du kan gå videre i veilederen.`;
+                    status.style.color = "#d35400";
+                    
+                    updateButton(true, `${airport.name} (${val})`);
                 }
             } else { 
-                nameDisplay.innerText = "Ukjent";
-                iconBox.innerHTML = '<i class="fas fa-question" style="color: orange;"></i>';
-                iconBox.style.borderColor = "orange";
-                
-                status.innerHTML = `Ukjent ICAO-kode.${easaLink}`; 
+                nameDisplay.innerText = "Ukjent kode";
+                iconBox.innerHTML = '<i class="fas fa-question-circle" style="color: #7f8c8d;"></i>';
+                status.innerHTML = `Fant ikke lufthavn med koden ${val}.`;
+                status.style.color = "#7f8c8d";
                 showManualButton();
             }
         }
@@ -522,11 +506,13 @@ function handleServiceClickNew(option, secondaryContainer, buttonContainer, clic
     const detailContent = serviceDetails[option.detailKey] || "<p>Ingen detaljer.</p>";
     
     serviceBox.innerHTML = `
-        <h4>${option.text}</h4>
-        ${detailContent}
+        <div class="service-detail-header">
+            <h4>${option.text}</h4>
+            <button id="btn-close-service" class="btn-icon"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="service-detail-body">${detailContent}</div>
         <div class="service-actions">
-            <button id="btn-select-service" class="btn-select">Velg</button>
-            <button id="btn-close-service" class="btn-close">Lukk</button>
+            <button id="btn-select-service" class="btn-primary">Velg denne tjenesten</button>
         </div>
     `;
 
@@ -541,9 +527,7 @@ function handleServiceClickNew(option, secondaryContainer, buttonContainer, clic
         
         const nextBtn = document.createElement('button');
         nextBtn.id = 'next-step-btn';
-        nextBtn.className = 'btn-reset';
-        nextBtn.style.width = "100%";
-        nextBtn.style.marginTop = "20px";
+        nextBtn.className = 'btn-primary btn-full-width margin-top';
         nextBtn.innerHTML = `Gå videre <i class="fas fa-arrow-right"></i>`;
         nextBtn.onclick = () => {
              stepHistory.push("exemptions");
@@ -552,9 +536,8 @@ function handleServiceClickNew(option, secondaryContainer, buttonContainer, clic
         
         secondaryContainer.insertBefore(nextBtn, secondaryContainer.firstChild);
         
-        document.getElementById('btn-select-service').innerText = "Valgt";
+        document.getElementById('btn-select-service').innerText = "Valgt ✓";
         document.getElementById('btn-select-service').disabled = true;
-        document.getElementById('btn-select-service').style.backgroundColor = "#6A8E7F"; 
     };
 }
 
@@ -564,12 +547,10 @@ function handleExemptionClick(option, secondaryContainer) {
 
     const confirmBtn = document.createElement('button');
     confirmBtn.id = 'confirm-btn';
-    confirmBtn.className = 'btn-reset';
-    confirmBtn.style.width = "100%";
-    confirmBtn.style.marginBottom = "15px";
-    confirmBtn.innerText = "Gå videre"; 
+    confirmBtn.className = 'btn-primary btn-full-width margin-top';
+    confirmBtn.innerText = "Bekreft unntak og fullfør"; 
     confirmBtn.onclick = () => {
-        showResult("Du er <strong>unntatt</strong> regelverket og trenger ikke sende samsvarserklæring.");
+        showResult("Basert på dine svar er virksomheten <strong>unntatt</strong> regelverket. Du trenger ikke levere samsvarserklæring.");
     };
     
     secondaryContainer.insertBefore(confirmBtn, secondaryContainer.firstChild);
@@ -583,19 +564,19 @@ function showResult(text) {
     const resultArea = document.getElementById('result-area');
     resultArea.classList.remove('hidden');
     document.getElementById('result-box').innerHTML = text;
-    document.querySelector('.result-header').innerText = "Resultat";
 
     const summaryBox = document.getElementById('result-summary');
     summaryBox.classList.remove('hidden');
     summaryBox.innerHTML = `
-        <h4>Dine valg:</h4>
-        <div class="summary-item"><span class="summary-label">Lufthavn:</span> <span>${userChoices.airport || "-"}</span></div>
-        <div class="summary-item"><span class="summary-label">Organisasjon:</span> <span>${userChoices.entity || "-"}</span></div>
-        <div class="summary-item"><span class="summary-label">Tjeneste:</span> <span>${userChoices.service || "-"}</span></div>
-        <div class="summary-item"><span class="summary-label">Unntak:</span> <span>${userChoices.exempt}</span></div>
+        <h3>Oppsummering</h3>
+        <ul class="summary-list">
+            <li><span class="label">Lufthavn:</span> <span class="val">${userChoices.airport || "-"}</span></li>
+            <li><span class="label">Organisasjon:</span> <span class="val">${userChoices.entity || "-"}</span></li>
+            <li><span class="label">Tjeneste:</span> <span class="val">${userChoices.service || "-"}</span></li>
+            <li><span class="label">Unntak:</span> <span class="val">${userChoices.exempt}</span></li>
+        </ul>
     `;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // startTool() kalles fra HTML
 });
