@@ -2,10 +2,8 @@
 
 :root {
     /* CAA Norway Palette */
-    --caa-blue-dark: #0E2644;   /* Hovedfarge header */
-    --caa-blue: #2363AD;        /* Primærknapper og lenker */
-    --caa-blue-hover: #1A4D8C;
-    
+    --caa-blue: #003366;        /* Hovedfarge (Mørk blå fra logo/profil) */
+    --caa-blue-light: #2363AD;  /* Lysere blå for knapper/interaksjon */
     --caa-bg: #F4F6F8;          /* Bakgrunn */
     --caa-white: #FFFFFF;
     
@@ -33,8 +31,8 @@ body {
 
 /* --- Navbar --- */
 .navbar {
-    background-color: var(--caa-blue-dark);
-    padding: 1rem 0;
+    background-color: var(--caa-blue);
+    padding: 1.5rem 0; /* Økt padding for større header */
     color: white;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -47,29 +45,24 @@ body {
     gap: 20px;
 }
 .nav-logo {
-    height: 50px;
+    height: 70px; /* Økt størrelse */
     width: auto;
 }
 .nav-center {
     flex-grow: 1;
+    text-align: center; /* Sentrert tittel */
 }
 .nav-title {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 2rem; /* Økt fontstørrelse */
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
-.nav-subtitle {
-    margin: 0;
-    font-size: 0.9rem;
-    font-weight: 400;
-    opacity: 0.8;
-}
 
 /* --- Container & Layout --- */
 .container {
-    max-width: 800px; /* Optimalisert for lesbarhet */
+    max-width: 800px;
     margin: 40px auto;
     padding: 0 20px;
     min-height: 80vh;
@@ -81,13 +74,13 @@ body {
     box-shadow: var(--shadow);
     padding: 40px;
     margin-bottom: 40px;
-    border-top: 4px solid var(--caa-blue);
+    border-top: 5px solid var(--caa-blue);
 }
 
 /* --- Typography --- */
 h2, .section-title {
-    color: var(--caa-blue-dark);
-    font-size: 1.6rem;
+    color: var(--caa-blue);
+    font-size: 1.8rem;
     font-weight: 700;
     margin-top: 0;
     margin-bottom: 1.5rem;
@@ -96,7 +89,7 @@ h2, .section-title {
 
 h4 {
     margin: 0 0 10px 0;
-    color: var(--caa-blue-dark);
+    color: var(--caa-blue);
 }
 
 p {
@@ -104,14 +97,11 @@ p {
     color: var(--caa-text);
 }
 
-/* --- Welcome Screen (Restored & Styled) --- */
+/* --- Welcome Screen --- */
 .welcome-card { text-align: center; }
 
-.welcome-icon {
-    font-size: 3rem;
-    color: var(--caa-blue);
-    margin-bottom: 20px;
-}
+/* Ikonet er fjernet fra HTML, men beholder CSS for sikkerhet */
+.welcome-icon { display: none; }
 
 .welcome-content {
     background-color: #FAFAFA;
@@ -156,7 +146,7 @@ p {
     font-size: 0.8rem; 
 }
 
-/* --- Progress Bar (Active) --- */
+/* --- Progress Bar --- */
 .flow-steps-container {
     display: flex;
     justify-content: space-between;
@@ -176,9 +166,9 @@ p {
     opacity: 1;
 }
 .step-circle {
-    width: 32px;
-    height: 32px;
-    background-color: var(--caa-blue-dark);
+    width: 35px;
+    height: 35px;
+    background-color: var(--caa-blue); /* Bruker samme blåfarge som header */
     color: white;
     border-radius: 50%;
     display: flex;
@@ -186,14 +176,14 @@ p {
     align-items: center;
     font-weight: 600;
     margin-bottom: 6px;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 .step-label {
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: var(--caa-blue-dark);
+    color: var(--caa-blue);
 }
 .flow-line {
     flex-grow: 1;
@@ -255,7 +245,7 @@ input[type="text"]:focus {
 }
 #icao-name-display {
     font-weight: 700;
-    color: var(--caa-blue-dark);
+    color: var(--caa-blue);
 }
 
 /* --- Buttons --- */
@@ -269,15 +259,15 @@ button {
 }
 
 .btn-primary {
-    background-color: var(--caa-blue);
+    background-color: var(--caa-blue-light);
     color: white;
     padding: 14px 28px;
     font-weight: 600;
 }
 .btn-primary:hover {
-    background-color: var(--caa-blue-hover);
+    background-color: var(--caa-blue);
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(35, 99, 173, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 51, 102, 0.3);
 }
 .btn-primary:disabled {
     background-color: #A0BCE0;
@@ -345,7 +335,7 @@ button {
     border: 1px solid var(--caa-border);
     padding: 30px 20px;
     text-align: center;
-    color: var(--caa-blue-dark);
+    color: var(--caa-text);
     font-weight: 600;
     display: flex;
     flex-direction: column;
@@ -355,18 +345,18 @@ button {
 }
 .continue-button i {
     font-size: 2rem;
-    color: var(--caa-blue);
+    color: var(--caa-blue-light);
     margin-bottom: 5px;
 }
 .continue-button:hover {
-    border-color: var(--caa-blue);
+    border-color: var(--caa-blue-light);
     box-shadow: var(--shadow-hover);
     transform: translateY(-2px);
 }
 .continue-button.selected {
     background-color: #EBF5FF;
-    border-color: var(--caa-blue);
-    box-shadow: inset 0 0 0 1px var(--caa-blue);
+    border-color: var(--caa-blue-light);
+    box-shadow: inset 0 0 0 1px var(--caa-blue-light);
 }
 .sub-text {
     font-size: 0.85rem;
@@ -374,18 +364,22 @@ button {
     font-weight: normal;
 }
 
-/* --- Dashed List Buttons --- */
+/* --- Dashed List Buttons (Steg 4) --- */
 .dashed-btn {
     background: var(--caa-white);
     border: 2px dashed #B0C4DE;
     padding: 20px;
-    text-align: left;
+    text-align: left; /* Sikrer venstrestilt tekst */
     color: var(--caa-text);
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start; /* Viktig for at "For AOC" etc ligger likt */
 }
 .dashed-btn:hover {
-    border-color: var(--caa-blue);
+    border-color: var(--caa-blue-light);
     background-color: #F8FBFF;
 }
 .dashed-btn.selected {
@@ -423,6 +417,7 @@ button {
     grid-template-columns: 1fr 1fr;
     gap: 20px;
     margin: 30px 0;
+    align-items: start; /* Sørger for at boksene ikke strekkes unødvendig */
 }
 .info-card-modern {
     padding: 20px;
@@ -430,8 +425,9 @@ button {
     border-left: 4px solid var(--caa-text-light);
     border-radius: var(--radius);
     font-size: 0.95rem;
+    /* Fjernet eventuelle height: 100% for å la innholdet styre høyden */
 }
-.info-card-modern.blue { background: #E3F2FD; border-color: var(--caa-blue); }
+.info-card-modern.blue { background: #E3F2FD; border-color: var(--caa-blue-light); }
 .info-card-modern.yellow { background: #FFFDE7; border-color: #FBC02d; }
 
 .info-header-row { display: flex; gap: 15px; }
@@ -486,7 +482,7 @@ button {
     border-bottom: 1px solid #EEE;
 }
 .summary-list .label { font-weight: 600; color: var(--caa-text-light); }
-.summary-list .val { font-weight: 600; color: var(--caa-blue-dark); text-align: right; }
+.summary-list .val { font-weight: 600; color: var(--caa-blue); text-align: right; }
 
 .button-footer {
     display: flex;

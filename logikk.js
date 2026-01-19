@@ -210,7 +210,7 @@ const flow = [
         ],
         secondaryOption: { 
             text: "Nei, ingen unntak passer", 
-            result: "<strong>Konklusjon:</strong><br>Virksomheten din ser ut til å være omfattet av regelverket (EU) 2025/20. Du må levere samsvarserklæring." 
+            result: "checkFinalResult" // Endret fra statisk tekst til funksjonskall
         }
     }
 ];
@@ -218,6 +218,7 @@ const flow = [
 let stepHistory = [];
 let userChoices = {
     airport: "",
+    isEasaAirport: true, // Standard
     entity: "",
     service: "",
     exempt: "Nei"
@@ -393,7 +394,14 @@ function renderStep(stepId, isBack = false) {
         }
         
         noBtn.innerText = step.secondaryOption.text;
-        noBtn.onclick = () => showResult(step.secondaryOption.result);
+        
+        noBtn.onclick = () => {
+            if (step.secondaryOption.result === "checkFinalResult") {
+                checkFinalResult();
+            } else {
+                showResult(step.secondaryOption.result);
+            }
+        };
         secondaryContainer.appendChild(noBtn);
     }
 }
@@ -413,7 +421,7 @@ function setupICAOListener(buttonContainer) {
     const iconBox = document.getElementById('icao-icon-box');
     const status = document.getElementById('icao-status');
     
-    const updateButton = (isValid, airportName) => {
+    const updateButton = (isValid, airportName, isEasa = true) => {
         buttonContainer.innerHTML = ''; 
         if (isValid) {
             const btn = document.createElement('button');
@@ -421,6 +429,7 @@ function setupICAOListener(buttonContainer) {
             btn.innerHTML = `Gå videre <i class="fas fa-arrow-right"></i>`;
             btn.onclick = () => {
                 userChoices.airport = airportName || (input.value.toUpperCase());
+                userChoices.isEasaAirport = isEasa; // LAGRE STATUS
                 stepHistory.push("entity_type");
                 renderStep("entity_type");
             };
@@ -437,7 +446,7 @@ function setupICAOListener(buttonContainer) {
             nameDisplay.innerText = "Manuelt bekreftet";
             iconBox.innerHTML = '<i class="fas fa-check-circle" style="color: var(--caa-success);"></i>';
             status.innerHTML = `<span style="color:var(--caa-text)">Manuelt bekreftet av bruker.</span>`;
-            updateButton(true, input.value + " (Manuelt bekreftet)");
+            updateButton(true, input.value + " (Manuelt bekreftet)", true);
         };
         buttonContainer.appendChild(manBtn);
     };
@@ -470,16 +479,16 @@ function setupICAOListener(buttonContainer) {
                          status.innerHTML = `EASA-lufthavn`;
                          status.style.color = "var(--caa-success)";
                     }
-                    updateButton(true, `${airport.name} (${val})`);
+                    updateButton(true, `${airport.name} (${val})`, true);
                 } else {
                     // IKKE EASA (Men tillat å gå videre)
                     iconBox.innerHTML = '<i class="fas fa-info-circle" style="color: #d35400;"></i>';
                     
-                    // ENDRET HER: Tillater nå "true" i updateButton
                     status.innerHTML = `Dette er ikke en EASA-lufthavn, men du kan gå videre i veilederen.`;
                     status.style.color = "#d35400";
                     
-                    updateButton(true, `${airport.name} (${val})`);
+                    // Sender med false for isEasa
+                    updateButton(true, `${airport.name} (${val})`, false);
                 }
             } else { 
                 nameDisplay.innerText = "Ukjent kode";
@@ -556,6 +565,15 @@ function handleExemptionClick(option, secondaryContainer) {
     secondaryContainer.insertBefore(confirmBtn, secondaryContainer.firstChild);
 }
 
+// Sjekker sluttresultatet basert på alle valg, inkludert lufthavn
+function checkFinalResult() {
+    if (!userChoices.isEasaAirport) {
+        showResult("<strong>Resultat: Unntatt</strong><br><br>Selv om tjenestene isolert sett faller innenfor, er virksomheten <strong>unntatt</strong> fordi aktiviteten foregår på en lufthavn som ikke er omfattet av EASA-regelverket (nasjonal lufthavn). Du trenger ikke levere samsvarserklæring.");
+    } else {
+        showResult("<strong>Konklusjon:</strong><br>Virksomheten din ser ut til å være omfattet av regelverket (EU) 2025/20. Du må levere samsvarserklæring.");
+    }
+}
+
 function showResult(text) {
     document.getElementById('question-content').classList.add('hidden');
     document.getElementById('back-btn').classList.add('hidden');
@@ -571,6 +589,7 @@ function showResult(text) {
         <h3>Oppsummering</h3>
         <ul class="summary-list">
             <li><span class="label">Lufthavn:</span> <span class="val">${userChoices.airport || "-"}</span></li>
+            <li><span class="label">Status lufthavn:</span> <span class="val">${userChoices.isEasaAirport ? "EASA" : "Nasjonal (Ikke EASA)"}</span></li>
             <li><span class="label">Organisasjon:</span> <span class="val">${userChoices.entity || "-"}</span></li>
             <li><span class="label">Tjeneste:</span> <span class="val">${userChoices.service || "-"}</span></li>
             <li><span class="label">Unntak:</span> <span class="val">${userChoices.exempt}</span></li>
