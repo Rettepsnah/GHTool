@@ -46,7 +46,8 @@ const airportDB = {
     "ENHK": { name: "Hasvik lufthavn", easa: true },
     "ENSK": { name: "Stokmarknes lufthavn", easa: true },
     "ENVY": { name: "Værøy Helikopterhavn, Tabbisodden", easa: true, isHelicopter: true },
-    "ENNO": { name: "Notodden lufthavn, Tuven", easa: false }
+    "ENNO": { name: "Notodden lufthavn, Tuven", easa: false },
+    "ENDU": { name: "Bardufoss lufthavn", easa: false } // NY
 };
 
 // Data for infobokser i Steg 1
@@ -179,19 +180,16 @@ const flow = [
             { text: "Flight dispatch tasks (Regulation (EU) No 965/2012)", type: "dashed", action: "confirm_exempt" },
             { text: "Load control tasks (load planning, mass and balance, etc.)", type: "dashed", action: "confirm_exempt" },
             { text: "Ground supervision", type: "dashed", action: "confirm_exempt" },
-            // ENDRET: Uthevet fet skrift
             { 
                 text: "<strong>For vedlikeholdsorganisasjoner iht. (EU) No 1321/2014)</strong><br><br>Oil handling for the aircraft (including replenishment, servicing)<br><br>Aircraft exterior cleaning when performed by maintenance<br><br>Any other ground handling activity for the purpose of aircraft maintenance", 
                 type: "dashed", 
                 action: "confirm_exempt" 
             },
-            // ENDRET: Uthevet fet skrift
             { 
                 text: "<strong>For AOC</strong><br><br>Commercial air transport operations with other-than-complex motor-powered aircraft<br><br>Any flight operations with complex or other-than-complex motor-powered aircraft that are not commercial air transport operations", 
                 type: "dashed", 
                 action: "confirm_exempt" 
             },
-            // ENDRET: Uthevet fet skrift
             { 
                 text: "<strong>For ADR - Lufthavnsoperatør</strong><br><br>Handling of passengers with reduced mobility, or ground transportation of passengers and crew members, or both, when these are the only ground handling services provided by an aerodrome operator with its own personnel, not cumulated with other ground handling services provided by that aerodrome operator.", 
                 type: "dashed", 
